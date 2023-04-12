@@ -2,10 +2,10 @@ class Calendar {
     constructor(events, tasks, scheduler) {
         this.events = events;
         this.tasks = tasks;
-        this.scheduler = scheduler;
+        this.taskScheduler = TaskScheduler(this.tasks);
     } 
     buildCalendar() {
-        
+        const blocks = new Array(24*4) // 24 hours * 4 blocks per hour
     }
 
     addEvent(event) {
@@ -14,50 +14,18 @@ class Calendar {
 
     addTask(task) {
         this.tasks.push(task);
+        this.scheduler.scheduleTasks();
     }
 }
 
-class Month {
-    constructor(name, days) {
-        this.name = name;
-        this.days = days;
+class TaskScheduler {
+    constructor(algorithm, tasks) {
+        this.algorithm = algorithm;
+        this.tasks = tasks; //list of tasks
     }
-    getName() {
-        return this.name;
+    scheduleTasks() {
+        
     }
-    getDays() {
-        return this.days;
-    }
-}
-
-class Week {
-    constructor(days) {
-        this.days = days;
-    }
-    getDays() {
-        return this.days;
-    }
-}
-
-class Day {
-    constructor(date, events, tasks, nextDay) {
-        this.date = date;
-        this.events = events;
-        this.tasks = tasks;
-    }
-    getDate() {
-        return this.date;
-    }
-    getEvents() {
-        return this.events;
-    }
-    getTasks() {
-        return this.tasks;
-    }
-    getNextDay() {
-        return this.nextDay;
-    }
-
 }
 
 class Task {
@@ -114,4 +82,47 @@ class Event {
     getPriority() {
         return this.priority;
     }
+}
+
+class Month {
+    constructor(name, days) {
+        this.name = name;
+        this.days = days;
+    }
+    getName() {
+        return this.name;
+    }
+    getDays() {
+        return this.days;
+    }
+}
+
+class Week {
+    constructor(days) {
+        this.days = days;
+    }
+    getDays() {
+        return this.days;
+    }
+}
+
+class Day {
+    constructor(date, events, tasks, nextDay) {
+        this.date = date;
+        this.events = events;
+        this.tasks = tasks;
+    }
+    getDate() {
+        return this.date;
+    }
+    getEvents() {
+        return this.events;
+    }
+    getTasks() {
+        return this.tasks;
+    }
+    getNextDay() {
+        return this.nextDay;
+    }
+
 }
