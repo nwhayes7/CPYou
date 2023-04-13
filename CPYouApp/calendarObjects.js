@@ -5,8 +5,8 @@ class Month {
         this.weeks = [];
     }
 
-    getDays() {
-        return this.days;
+    getWeeks() {
+        return this.weeks;
     }
 
     // Create an iterator of day by day
@@ -16,6 +16,15 @@ class Month {
                 yield day;
             }
         }
+    }
+
+    // Return the number of days in the month
+    getNumberOfDays() {
+        let counter = 0;
+        for (let day of this.dayIterator()) {
+            counter++;
+        }
+        return counter;
     }
 
     // Return all of the events and tasks scheduled for this month
@@ -44,9 +53,34 @@ class Month {
         }
         return tasks;
     }
+
+    // Return summary statistics of the month
+    getSummary() {
+        const numMinutes = this.getNumberOfDays() * 24 * 60;
+        const eventsAndTasks = this.getEventsAndTasks();
+        let eventCount = 0;
+        let taskCount = 0;
+        let eventDuration = 0;
+        let taskDuration = 0;
+        for (const item of eventsAndTasks) {
+            if (item instanceof Event) {
+                eventCount++;
+                eventDuration += item.endDate.getTime() - item.startDate.getTime();
+            } else if (item instanceof Task) {
+                taskCount++;
+                taskDuration += item.endTime.getTime() - item.startTime.getTime();
+            }
+        }
+
+        // Convert event and task duration from ms to minutes
+        eventDuration /= 60000;
+        taskDuration /= 60000;
+        let freeDuration = numMinutes - eventDuration - taskDuration;
+        
+        // Return the number of events and tasks, and the duration of events, tasks, and free space (in minutes)
+        return(eventCount, taskCount, eventDuration, taskDuration, freeDuration);
+    }
 }
-
-
 
 class Week {
     constructor() {
@@ -90,6 +124,33 @@ class Week {
             tasks.push(...day.tasks);
         }
         return tasks;
+    }
+
+    // Return summary statistics of the week
+    getSummary() {
+        const numMinutes = 7 * 24 * 60;
+        const eventsAndTasks = this.getEventsAndTasks();
+        let eventCount = 0;
+        let taskCount = 0;
+        let eventDuration = 0;
+        let taskDuration = 0;
+        for (const item of eventsAndTasks) {
+            if (item instanceof Event) {
+                eventCount++;
+                eventDuration += item.endDate.getTime() - item.startDate.getTime();
+            } else if (item instanceof Task) {
+                taskCount++;
+                taskDuration += item.endTime.getTime() - item.startTime.getTime();
+            }
+        }
+
+        // Convert event and task duration from ms to minutes
+        eventDuration /= 60000;
+        taskDuration /= 60000;
+        let freeDuration = numMinutes - eventDuration - taskDuration;
+        
+        // Return the number of events and tasks, and the duration of events, tasks, and free space (in minutes)
+        return(eventCount, taskCount, eventDuration, taskDuration, freeDuration);
     }
 }
 
@@ -182,6 +243,33 @@ class Day {
         const eventsAndTasks = [];
         eventsAndTasks.push(...this.events, ...this.tasks);
         return eventsAndTasks;
+    }
+
+    // Return summary statistics of the day
+    getSummary() {
+        const numMinutes = 24 * 60;
+        const eventsAndTasks = this.getEventsAndTasks();
+        let eventCount = 0;
+        let taskCount = 0;
+        let eventDuration = 0;
+        let taskDuration = 0;
+        for (const item of eventsAndTasks) {
+            if (item instanceof Event) {
+                eventCount++;
+                eventDuration += item.endDate.getTime() - item.startDate.getTime();
+            } else if (item instanceof Task) {
+                taskCount++;
+                taskDuration += item.endTime.getTime() - item.startTime.getTime();
+            }
+        }
+
+        // Convert event and task duration from ms to minutes
+        eventDuration /= 60000;
+        taskDuration /= 60000;
+        let freeDuration = numMinutes - eventDuration - taskDuration;
+        
+        // Return the number of events and tasks, and the duration of events, tasks, and free space (in minutes)
+        return(eventCount, taskCount, eventDuration, taskDuration, freeDuration);
     }
 }
 
