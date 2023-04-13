@@ -5,8 +5,8 @@ class Month {
         this.weeks = [];
     }
 
-    getDays() {
-        return this.days;
+    getWeeks() {
+        return this.weeks;
     }
 
     // Create an iterator of day by day
@@ -16,10 +16,71 @@ class Month {
                 yield day;
             }
         }
-    }    
+    }
+
+    // Return the number of days in the month
+    getNumberOfDays() {
+        let counter = 0;
+        for (let day of this.dayIterator()) {
+            counter++;
+        }
+        return counter;
+    }
+
+    // Return all of the events and tasks scheduled for this month
+    getEventsAndTasks() {
+        const eventsAndTasks = [];
+        for (const day of this.dayIterator()) {
+            eventsAndTasks.push(...day.events, ...day.tasks);
+        }
+        return eventsAndTasks;
+    }
+
+    // Return all of the events scheduled for this month
+    getEvents() {
+        const events = [];
+        for (const day of this.dayIterator()) {
+            events.push(...day.events);
+        }
+        return events;
+    }
+
+    // Return all of the tasks scheduled for this month
+    getTasks() {
+        const tasks = [];
+        for (const day of this.dayIterator()) {
+            tasks.push(...day.tasks);
+        }
+        return tasks;
+    }
+
+    // Return summary statistics of the month
+    getSummary() {
+        const numMinutes = this.getNumberOfDays() * 24 * 60;
+        const eventsAndTasks = this.getEventsAndTasks();
+        let eventCount = 0;
+        let taskCount = 0;
+        let eventDuration = 0;
+        let taskDuration = 0;
+        for (const item of eventsAndTasks) {
+            if (item instanceof Event) {
+                eventCount++;
+                eventDuration += item.endDate.getTime() - item.startDate.getTime();
+            } else if (item instanceof Task) {
+                taskCount++;
+                taskDuration += item.endTime.getTime() - item.startTime.getTime();
+            }
+        }
+
+        // Convert event and task duration from ms to minutes
+        eventDuration /= 60000;
+        taskDuration /= 60000;
+        let freeDuration = numMinutes - eventDuration - taskDuration;
+        
+        // Return the number of events and tasks, and the duration of events, tasks, and free space (in minutes)
+        return(eventCount, taskCount, eventDuration, taskDuration, freeDuration);
+    }
 }
-
-
 
 class Week {
     constructor() {
@@ -36,7 +97,61 @@ class Week {
         for (const day of this.days) {
             yield day;
         }
-    }    
+    }   
+    
+    // Return all of the events and tasks scheduled for this week
+    getEventsAndTasks() {
+        const eventsAndTasks = [];
+        for (const day of this.dayIterator()) {
+            eventsAndTasks.push(...day.events, ...day.tasks);
+        }
+        return eventsAndTasks;
+    }
+
+    // Return all of the events scheduled for this week
+    getEvents() {
+        const events = [];
+        for (const day of this.dayIterator()) {
+            events.push(...day.events);
+        }
+        return events;
+    }
+
+    // Return all of the tasks scheduled for this week
+    getTasks() {
+        const tasks = [];
+        for (const day of this.dayIterator()) {
+            tasks.push(...day.tasks);
+        }
+        return tasks;
+    }
+
+    // Return summary statistics of the week
+    getSummary() {
+        const numMinutes = 7 * 24 * 60;
+        const eventsAndTasks = this.getEventsAndTasks();
+        let eventCount = 0;
+        let taskCount = 0;
+        let eventDuration = 0;
+        let taskDuration = 0;
+        for (const item of eventsAndTasks) {
+            if (item instanceof Event) {
+                eventCount++;
+                eventDuration += item.endDate.getTime() - item.startDate.getTime();
+            } else if (item instanceof Task) {
+                taskCount++;
+                taskDuration += item.endTime.getTime() - item.startTime.getTime();
+            }
+        }
+
+        // Convert event and task duration from ms to minutes
+        eventDuration /= 60000;
+        taskDuration /= 60000;
+        let freeDuration = numMinutes - eventDuration - taskDuration;
+        
+        // Return the number of events and tasks, and the duration of events, tasks, and free space (in minutes)
+        return(eventCount, taskCount, eventDuration, taskDuration, freeDuration);
+    }
 }
 
 class Day {
@@ -122,14 +237,52 @@ class Day {
     getNextDay() {
         return this.nextDay;
     }
+
+    // Return all of the events and tasks scheduled for this day
+    getEventsAndTasks() {
+        const eventsAndTasks = [];
+        eventsAndTasks.push(...this.events, ...this.tasks);
+        return eventsAndTasks;
+    }
+
+    // Return summary statistics of the day
+    getSummary() {
+        const numMinutes = 24 * 60;
+        const eventsAndTasks = this.getEventsAndTasks();
+        let eventCount = 0;
+        let taskCount = 0;
+        let eventDuration = 0;
+        let taskDuration = 0;
+        for (const item of eventsAndTasks) {
+            if (item instanceof Event) {
+                eventCount++;
+                eventDuration += item.endDate.getTime() - item.startDate.getTime();
+            } else if (item instanceof Task) {
+                taskCount++;
+                taskDuration += item.endTime.getTime() - item.startTime.getTime();
+            }
+        }
+
+        // Convert event and task duration from ms to minutes
+        eventDuration /= 60000;
+        taskDuration /= 60000;
+        let freeDuration = numMinutes - eventDuration - taskDuration;
+        
+        // Return the number of events and tasks, and the duration of events, tasks, and free space (in minutes)
+        return(eventCount, taskCount, eventDuration, taskDuration, freeDuration);
+    }
 }
 
 class Task {
-    constructor(name, description, dueDate, priority, duration, divisible) {
+    counter = 0;
+    constructor(name, description, dueDate, priority, duration) {
+        this.id = ++counter;
         // String
         this.name = name;
         // String
         this.description = description;
+        // Date
+        this.creationTime = new Date();
         // Date; these are not set at creation, these are set by the scheduling algorithm
         this.startTime = new Date(NaN);
         this.endTime = new Date(NaN);
@@ -166,7 +319,9 @@ class Task {
 }
 
 class Event {
-    constructor(name, description, creationTime, startDate, endDate, location, deadline) {
+    counter = 0;
+    constructor(name, description, startDate, endDate, location, deadline, priority) {
+        this.id = counter++;
         this.name = name;
         this.description = description;
         this.creationTime = creationTime;
@@ -176,6 +331,7 @@ class Event {
         // The user will input a "deadline" for an event. This will be converted to
         // seconds since the epoch; smaller values means a sooner deadline means 
         // a higher priority.
+        this.deadline = deadline;
         this.priority = priority;
     }
     getName() {
