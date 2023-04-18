@@ -19,13 +19,19 @@ function addStar() {
   scene.add(star) // add star to scene
 }
 
-function generateTasks(dayObj, dayBackend) {
+function generateSchedule(dayObj, dayBackend) {
   let yPos = -.5 // current y pos
   let lastHours = 0 // initial hours must be 1
   let currHours = 1 // get currHours from current task
   let i = 0 //
-  for (let j = dayBackend.getTasks().length - 1; j >= 0; j--) { // loop through task list
-    currHours = dayBackend.getTasks()[j].getDuration()/30 // get currHours from current task
+  for (let j = dayBackend.getEventsAndTasks().length - 1; j >= 0; j--) { // loop through events and tasks
+    let newEventOrTask = dayBackend.getEventsAndTasks()[j]
+    let newEventOrTaskName = newEventOrTask.getName()
+    if (newEventOrTask instanceof Event) {
+      currHours = (newEventOrTask.getEndDate() - newEventOrTask.getStartDate())/30 // get currHours from current task
+    } else if (newEventOrTask instanceof Task) {
+      currHours = newEventOrTask.getDuration()/30 // get currHours from current task
+    }
     const geometry = new THREE.BoxGeometry(5, currHours, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
@@ -79,11 +85,9 @@ function generateDays(weekObj, weekBackend) {
 
     // create day object and assign position
     const dayObj = new THREE.Object3D() // create new day object
-    let yPos = generateTasks(dayObj, weekBackend.getDays()[i]) // generate tasks for day
+    let yPos = generateSchedule(dayObj, weekBackend.getDays()[i]) // generate schedule for day
     yMax = Math.max(yPos, yMax)
-    // cube.position.setY(yPos)
     cube.position.setZ(dayObj.position.z)
-    // dayObj.add(cube)  // add cube to day object
 
     dayObj.position.set(x*7, 0, 0) // set x
     cube.position.setX(dayObj.position.x)
