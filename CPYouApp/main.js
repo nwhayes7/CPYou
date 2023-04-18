@@ -22,9 +22,10 @@ function addStar() {
 function generateTasks(dayObj, dayBackend) {
   let yPos = 0 // current y pos
   let lastHours = 1 // initial hours must be 1
-  let currHours = 2 //
+  let currHours = 1 // get currHours from current task
   let i = 0 //
   for (let j = 0; j < dayBackend.getTasks().length; j++) { // loop through task list
+    currHours = dayBackend.getTasks()[j].getDuration()/60 // get currHours from current task
     const geometry = new THREE.BoxGeometry(5, currHours, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
