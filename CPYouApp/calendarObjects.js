@@ -326,7 +326,8 @@ export class Task {
         return this.priority;
     }
     getDuration() {
-        return this.duration;
+
+        return this.duration/60000;
     }
     // Used in RR scheduling to create a smaller instance of a task
     createSmallerTask(newDuration) {

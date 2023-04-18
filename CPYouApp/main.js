@@ -29,13 +29,13 @@ function generateSchedule(dayObj, dayBackend) {
     let color = 0xC06C84
     let printString = newEventOrTask.getName()
     if (newEventOrTask instanceof Event) {
-      currHours = (newEventOrTask.getEndDate() - newEventOrTask.getStartDate())/30 // get currHours from current task
+      currHours = (newEventOrTask.getEndDate() - newEventOrTask.getStartDate())/3000000 // get currHours from current task
       if (currHours >= 1.5) {
         printString = printString + "\n" + newEventOrTask.getStartDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " - " + newEventOrTask.getEndDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
       }
     } else if (newEventOrTask instanceof Task) {
       color = 0xf67280
-      currHours = newEventOrTask.getDuration()/30 // get currHours from current task
+      currHours = newEventOrTask.getDuration()/30// get currHours from current task
       if (currHours >= 1.5) {
         printString = printString + "\n" + newEventOrTask.getDuration() + " minutes"
       }
@@ -47,7 +47,7 @@ function generateSchedule(dayObj, dayBackend) {
     loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
       const textGeometryTask = new TextGeometry(printString, {
         font: font,
-        size: .4,
+        size: .35,
         height: .04,
         curveSegments: 2
       })
@@ -195,7 +195,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio) // set pixel ratio to match device
 renderer.setSize(window.innerWidth, window.innerHeight) // set renderer size to match window size
-camera.position.setY(37) // move camera up 50 units
+camera.position.setY(42) // move camera up 50 units
 camera.rotateX(90) // rotate camera to face
 const controls = new OrbitControls(camera, renderer.domElement) // listen to dom events on mouse and update camera positon
 
