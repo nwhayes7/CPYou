@@ -15,8 +15,6 @@ button {
 }
 
 .rescheduleButton {
-  right: 20px;
-  top: 15px;
   background-color: #ffffff;
   border-radius: 8px;
   border-width: 0;
@@ -37,4 +35,25 @@ button {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+}
+
+#FCFS {
+  right: 20px;
+  top: 15px;
+}
+#Deadline {
+  right: 20px;
+  top: 63px;
+}
+#Priority {
+  right: 20px;
+  top: 111px;
+}
+#RoundRobin {
+  right: 20px;
+  top: 159px;
+}
+#SJF {
+  right: 20px;
+  top: 207px;
 }

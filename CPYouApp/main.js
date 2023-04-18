@@ -224,10 +224,27 @@ console.log(month instanceof Month);
 let weeks = generateWeeks(month) // get weeks objects
 generateTaskList(weeks[0].children[7].position.y) // generate task list
 
-document.getElementById("RES").addEventListener("click", toggleReschedule, false);
+document.getElementById("FCFS").addEventListener("click", toggleFCFS, false);
+document.getElementById("Deadline").addEventListener("click", toggleDeadline, false);
+document.getElementById("Priority").addEventListener("click", togglePriority, false);
+document.getElementById("RoundRobin").addEventListener("click", toggleRoundRobin, false);
+document.getElementById("SJF").addEventListener("click", toggleSJF, false);
 
-function toggleReschedule() {
+
+function toggleFCFS() {
 	console.log("BEEEEEP");	// toggles between 0 and 1
+}
+function toggleDeadline() {
+  console.log("BEEEEEP");	// toggles between 0 and 1
+}
+function togglePriority() {
+  console.log("BEEEEEP");	// toggles between 0 and 1
+}
+function toggleRoundRobin() {
+  console.log("BEEEEEP");	// toggles between 0 and 1
+}
+function toggleSJF() {
+  console.log("BEEEEEP");	// toggles between 0 and 1
 }
 
 animate()
