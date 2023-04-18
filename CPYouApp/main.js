@@ -209,14 +209,14 @@ scene.add(pointLight)
 // scene.add(pointLight, ambientLight)
 
 // Add helpers to get a sense of distance and rotation
-const lightHelper = new THREE.PointLightHelper(pointLight) 
-const gridHelper = new THREE.GridHelper(200, 50)
-scene.add(lightHelper ,gridHelper)
+// const lightHelper = new THREE.PointLightHelper(pointLight) 
+// const gridHelper = new THREE.GridHelper(200, 50)
+// scene.add(lightHelper ,gridHelper)
 
 // Add Background Color
 scene.background = new THREE.Color(0x355c7d)
 
-Array(100).fill().forEach(addStar) // add 100 stars to scene
+Array(200).fill().forEach(addStar) // add 100 stars to scene
 
 const loader = new FontLoader()
 
