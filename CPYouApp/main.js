@@ -28,6 +28,20 @@ function generateTasks(dayObj) {
     const geometry = new THREE.BoxGeometry(5, currHours, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
+
+    loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+      const textGeometryTask = new TextGeometry('Event Text', {
+        font: font,
+        size: .4,
+        height: .04,
+        curveSegments: 2
+      })
+      const textMaterialTask = new THREE.MeshStandardMaterial({ color: 0xFFFFFF }) //F8B195
+      const textTask = new THREE.Mesh(textGeometryTask, textMaterialTask)
+      textTask.position.set(-2.1, task.geometry.parameters.height/2 - .7, 2.6)
+      task.add(textTask)
+    })
+
     yPos = yPos - (lastHours/2) -.5 - (currHours/2) // update y pos
     task.position.set(0, yPos, 0) // set cube position
     dayObj.add(task) // add cube to day object
@@ -59,13 +73,10 @@ function generateDays(weekObj) {
 
     // create day object and assign position
     const dayObj = new THREE.Object3D() // create new day object
-
     dayObj.add(cube)  // add cube to day object
-
     generateTasks(dayObj) // generate tasks for day
-
     dayObj.position.set(x*7, -.5, 0) // set x and y position of day object
-  
+
     weekObj.add(dayObj) 
     x--
   }
