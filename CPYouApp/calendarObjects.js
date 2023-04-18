@@ -1,8 +1,12 @@
-class Month {
+export class Month {
     constructor(index) {
         // Months are a list of weeks
         this.index = index;
         this.weeks = [];
+        this.weeks.push(new Week(0));
+        this.weeks.push(new Week(1));
+        this.weeks.push(new Week(2));
+        this.weeks.push(new Week(3));
     }
 
     getWeeks() {
@@ -82,10 +86,17 @@ class Month {
     }
 }
 
-class Week {
-    constructor() {
+export class Week {
+    constructor(i) {
         // Weeks are a list of days
         this.days = [];
+        this.days.push(new Day(new Date(2023, 1, i*7 + 1)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 2)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 3)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 4)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 5)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 6)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 7)));
     }
 
     getDays() {
@@ -154,8 +165,8 @@ class Week {
     }
 }
 
-class Day {
-    constructor(date, nextDay) {
+export class Day {
+    constructor(date) {
         this.date = date;
         this.events = [];
         this.tasks = [];
@@ -169,6 +180,7 @@ class Day {
     getTasks() {
         return this.tasks;
     }
+    
     // Returns a 24-hour view of the day
     getFullDayView() {
         const dayView = [];
@@ -234,6 +246,7 @@ class Day {
         }
         return dayView;
     }    
+
     getNextDay() {
         return this.nextDay;
     }
@@ -273,7 +286,7 @@ class Day {
     }
 }
 
-class Task {
+export class Task {
     counter = 0;
     constructor(name, description, dueDate, priority, duration) {
         this.id = ++counter;
@@ -318,7 +331,7 @@ class Task {
       }
 }
 
-class Event {
+export class Event {
     counter = 0;
     constructor(name, description, startDate, endDate, location, deadline, priority) {
         this.id = counter++;

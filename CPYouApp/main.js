@@ -1,4 +1,6 @@
 import './style.css'
+import {Month, Week, Day, Task, Event} from "./calendarObjects.js"
+import {Calendar} from "./calendarScheduler.js"
 
 import * as THREE from 'three'
 
@@ -68,16 +70,32 @@ function generateDay(weekObj) {
   }
 }
 
-function generateWeeks() {
+function generateWeeks(month = null) {
   let weeks  = []
   let z = 1
-  while (z > -3) {
-    const week = new THREE.Object3D()
-    generateDay(week)
-    week.position.set(0, 0, z * 7 + 3.5)
-    weeks.push(week)
-    scene.add(week)
-    z--
+  // Implentation with backend connection
+  if (month != null) {
+    console.log(month.getWeeks());
+    for (let i = 0; i < month.getWeeks().length; i++) {
+      console.log(i);
+      const week = new THREE.Object3D()
+      generateDay(week)
+      week.position.set(0, 0, z * 7 + 3.5)
+      weeks.push(week)
+      scene.add(week)
+      z--
+    }
+  }
+  // Original implementation
+  else {
+    while (z > -3) {
+      const week = new THREE.Object3D()
+      generateDay(week)
+      week.position.set(0, 0, z * 7 + 3.5)
+      weeks.push(week)
+      scene.add(week)
+      z--
+    }
   }
   return weeks
 } 
@@ -149,7 +167,12 @@ scene.background = new THREE.Color(0x355c7d)
 Array(100).fill().forEach(addStar) // add 100 stars to scene
 
 const loader = new FontLoader()
-let weeks = generateWeeks() // get weeks objects
+
+// calendar has only 1 month in it by default
+let calendar = new Calendar();
+let month = calendar.getMonths()[0];
+console.log(month instanceof Month);
+let weeks = generateWeeks(month) // get weeks objects
 generateTaskList() // generate task list
 
 animate()

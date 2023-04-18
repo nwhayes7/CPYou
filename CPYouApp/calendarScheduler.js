@@ -1,10 +1,12 @@
-class Calendar {
+import {Month, Week, Day, Task, Event} from "./calendarObjects.js"
+
+export class Calendar {
     constructor() {
         // The calendar is a list of months
         // The month constructor creates the correct number of weeks and days
         this.months = [];
         // For testing purposes, we just add 1 month
-        const month = new Month(i);
+        const month = new Month(0);
         this.months.push(month);
 
         // Tasks are dynamic
@@ -12,6 +14,10 @@ class Calendar {
 
         // Create the task scheduler
         this.taskScheduler = new TaskScheduler(this.tasks);
+      }
+
+      getMonths() {
+        return this.months;
       }
 
       // Create an iterator of day by day
@@ -279,7 +285,62 @@ class TaskScheduler {
                 //     }
                 // }
             }
-        } 
-  
+        }   
     }
 }
+
+function main() {
+    // create a new calendar
+    const calendar = new Calendar();
+
+    // create some test tasks
+    calendar.createTask("Write report", "Write a progress report for the project", new Date(2023, 3, 5), 3, 4);
+    calendar.createTask("Test code", "Run tests on the latest code changes", new Date(2023, 3, 6), 2, 3);    
+    calendar.createTask("task1", "description", new Date(2023, 2, 29, 13, 0), 1, 120);
+    calendar.createTask("task2", "description", new Date(2023, 2, 30, 14, 0), 2, 180);
+    calendar.createTask("task3", "description", new Date(2023, 3, 1, 11, 0), 3, 60);
+    calendar.createTask("task4", "description", new Date(2023, 3, 3, 10, 0), 4, 240);
+
+    // Run the scheduler on just tasks
+    console.log("Before priority scheduling tasks:");
+    console.log(calendar.tasks);
+  
+    calendar.setSchedulerAlgorithm("Priority");
+    calendar.runScheduler(calendar.months[0]); 
+
+    console.log("After priority scheduling tasks:");
+    console.log(calendar.tasks);
+
+    // create some test events
+    calendar.createEvent("Meeting", "Discuss project updates", new Date(2023, 3, 1, 14, 0), new Date(2023, 3, 1, 15, 0), "Room 101", null, 2);
+    calendar.createEvent("Lunch", "Eat at the cafeteria", new Date(2023, 3, 1, 12, 0), new Date(2023, 3, 1, 13, 0), "Cafeteria", null, 1);
+
+
+    // run the task scheduler for the next week
+    console.log("Duration scheduling tasks:");
+    const timespan = calendar.months[0].weeks[0];
+    calendar.runScheduler(timespan);
+
+    // log the scheduled events and tasks
+    console.log("Scheduled events:");
+    for (const day of calendar.dayIterator()) {
+        const events = day.getEvents();
+        for (const event of events) {
+            console.log(`${event.getName()} on ${day.getDate()}/${day.getMonth()+1}/${day.getYear()}`);
+        }
+    }
+  
+    console.log("Scheduled tasks:");
+    for (const day of calendar.dayIterator()) {
+        const tasks = day.getTasks();
+        for (const task of tasks) {
+            if (isNaN(task.startTime)) {
+                console.log(`${task.getName()} has not been scheduled yet`);
+            } else {
+                console.log(`${task.getName()} starts on ${task.startDate.getDate()}/${task.startDate.getMonth()+1}/${task.startDate.getYear()}`);
+            }
+        }
+    }
+}
+
+//main();
