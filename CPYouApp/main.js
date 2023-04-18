@@ -17,13 +17,34 @@ function addStar() {
   scene.add(star) // add star to scene
 }
 
+function generateTasks(dayObj) {
+  let yPos = 0 // current y pos
+  let hours = 4 // event hours
+  let x = 0 //
+  while (x < 10) { // loop through task list
+    const geometry = new THREE.BoxGeometry(5, hours, 5)
+    const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
+    const task = new THREE.Mesh(geometry, material) // create new cube mesh
+    task.position.set(dayObj.x, yPos, dayObj.z) // set cube position
+    yPos = yPos + hours + 3
+
+    dayObj.add(task)
+    x++
+
+    scene.add(dayObj) // add cube to scene
+  }
+}
+
 function generateDay(weekObj) {
   let x = 3
   while (x > -4) {
+    // create day object and assign position
+    const dayObj = new THREE.Object3D()
+    dayObj.position.set(x*7, -.5, 0)
+
     const geometry = new THREE.BoxGeometry(5, 1, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xc06c84 })
     const cube = new THREE.Mesh(geometry, material) // create new cube mesh
-    cube.position.set(x*7, -.5, 0) // set cube position
 
     loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
       const textGeometry = new TextGeometry('June1\nI love pandas', {
@@ -37,8 +58,12 @@ function generateDay(weekObj) {
       text.position.set(-2.1,.6,-1.8)
       text.rotateX(-1.6)
       cube.add(text)
-  })
-    weekObj.add(cube) // add cube to scene
+    })
+    dayObj.add(cube)  
+
+    generateTasks(dayObj)
+  
+    weekObj.add(dayObj) 
     x--
   }
 }
