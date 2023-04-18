@@ -176,12 +176,23 @@ function generateTaskList(y) {
   }
 }
 
+// For stopping and restarting the scene
+let animationID;
+
 function animate() {
-  requestAnimationFrame( animate ) // ask browser to perform animation
+  animationID = requestAnimationFrame( animate ) // ask browser to perform animation
 
   controls.update() // update camera position
   pointLight.position.set(camera.position.x, camera.position.y, camera.position.z) // move light with camera
   renderer.render(scene, camera)  // render scene with camera
+}
+
+function stopAnimation() {
+  cancelAnimationFrame(animationID);
+}
+
+function restartAnimation() {
+  animate();
 }
 
 // Create Scene and Camera to be Rendered
@@ -233,18 +244,34 @@ document.getElementById("SJF").addEventListener("click", toggleSJF, false);
 
 function toggleFCFS() {
 	console.log("BEEEEEP");	// toggles between 0 and 1
+  console.log(month.getTasks());
+  calendar.setSchedulerAlgorithm("FCFS");
+  calendar.runScheduler(month);
+  console.log(month.getTasks());
 }
 function toggleDeadline() {
   console.log("BEEEEEP");	// toggles between 0 and 1
+  calendar.setSchedulerAlgorithm("Deadline");
+  calendar.runScheduler(month);
 }
 function togglePriority() {
-  console.log("BEEEEEP");	// toggles between 0 and 1
+  calendar.setSchedulerAlgorithm("Priority");
+  calendar.runScheduler(month);
+  // Clear the scene
+  // Rebuild scene with new backend values
+  generateWeeks(month) // get weeks objects
+  generateTaskList(weeks[0].children[7].position.y) // generate task list
+
 }
 function toggleRoundRobin() {
   console.log("BEEEEEP");	// toggles between 0 and 1
+  calendar.setSchedulerAlgorithm("RR");
+  calendar.runScheduler(month);
 }
 function toggleSJF() {
   console.log("BEEEEEP");	// toggles between 0 and 1
+  calendar.setSchedulerAlgorithm("SJF");
+  calendar.runScheduler(month);
 }
 
 animate()

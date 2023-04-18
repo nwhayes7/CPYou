@@ -58,6 +58,16 @@ export class Month {
         return tasks;
     }
 
+    removeTasks() {
+        for (const day of this.dayIterator()) {
+            day.tasks = []
+        }        
+    }
+
+    setTasks(tasks) {
+        this.tasks = tasks;
+    } 
+
     // Return summary statistics of the month
     getSummary() {
         const numMinutes = this.getNumberOfDays() * 24 * 60;
@@ -171,11 +181,13 @@ export class Day {
         this.events = [];
         this.events.push(createRandomEvent(date));
         this.tasks = [];
-        let numEvents = 3
-        for (let i = 1; i <= numEvents; i++) {
-            const t = new Task("task " + i, "description", new Date("2023-04-01"), 3, (Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30) * 60000);
-            this.tasks.push(t);
-        }
+        //if (isAfterFebruary22(date)) {
+            let numEvents = 3
+            for (let i = 1; i <= numEvents; i++) {
+                const t = new Task("task " + i, "description", new Date("2023-04-01"), Math.floor(Math.random() * 4) + 1, (Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30) * 60000);
+                this.tasks.push(t);
+            }
+        //}
     }
     getDate() {
         return this.date;
@@ -284,8 +296,8 @@ export class Day {
 
         // Convert event duration from ms to hours
         eventDuration /= 3600000;
-        // Convert task duration from minutes to hours
-        taskDuration /= 60;
+        // Convert task duration from ms to hours
+        taskDuration /= 3600000;
         let freeDuration = (numMinutes / 60) - eventDuration - taskDuration;
 
         // Return the number of events and tasks, and the duration of events, tasks, and free space (in minutes)
@@ -374,6 +386,7 @@ export class Event {
     }
 }
 
+// For testing:
 function createRandomEvent(date) {
     const names = ['Birthday Party', 'Conference', 'Music Festival', 'Wedding', 'Charity Event'];
     const descriptions = ['A fun event for friends and family', 'A gathering of professionals', 'A celebration of music and culture', 'A beautiful wedding ceremony', 'A fundraising event for a good cause'];
@@ -397,3 +410,10 @@ function createRandomEvent(date) {
     return new Event(randomName, randomDescription, randomStartDate, randomEndDate, randomLocation, randomPriority);
 }
   
+function isAfterFebruary22(date) {
+    // Create a new Date object representing February 22 of the same year as the given date
+    const feb22 = new Date(date.getFullYear(), 1, 22);
+    
+    // Use getTime() to compare the two dates
+    return date.getTime() >= feb22.getTime();
+  }

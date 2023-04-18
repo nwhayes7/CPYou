@@ -100,9 +100,10 @@ class TaskScheduler {
     // This algorithm will find all of the tasks for that given month/week/day
     // and then sort them according to the algorithm set
     runScheduler(timespan, unassignedTasks) {
-        tasks = timespan.getTasks();
+        let tasks = timespan.getTasks();
+        timespan.removeTasks();
         tasks.concat(unassignedTasks);
-        events = timespan.getEvents();
+        let events = timespan.getEvents();
 
         // Algorithm sorts tasks in order
         switch(this.algorithm) {
@@ -150,7 +151,7 @@ class TaskScheduler {
                     }
                     return 0;
                 });
-
+                
                 break;
             case "RR":
                 console.log("RR");
@@ -206,86 +207,49 @@ class TaskScheduler {
         }
 
         // Algorithm then interleaves tasks with events so they do not overlap
+        let weeks = timespan.getWeeks();
+
         if (timespan instanceof Month || timespan instanceof Week) {
             // Iterate through the days in the timespan
-            for (let day of timespan.dayIterator()) {
+            let days = []
+            for (let week of weeks) {
+                for (let day of week.getDays()) {
+                    console.log("Current day: " + day)
+                    days.push(day)
+                }
+            }
+            console.log("days" + days);
+            for (let i = 0; i < tasks.length; i++) {
+                let day = days[i]
+                console.log(day)
+                let allocatedTask = false;
                 let eventsOnDay = day.getEvents();
-            
                 // Sort the events on the current day by end time
                 eventsOnDay.sort((event1, event2) => {
                     return event1.endDate - event2.endDate;
                 });
-            
                 // Allocate tasks in the free spots on the current day
-                let startTime = new Date(day);
-                for (let task of tasks) {
-                    let taskEndTime = new Date(startTime.getTime() + task.duration);
-                
-                    // Check if the task overlaps with any events on the current day
-                    for (let event of eventsOnDay) {
-                        if (taskEndTime <= event.startDate) {
-                            // Allocate the task in the free spot
-                            task.startTime = startTime;
-                            task.endTime = taskEndTime;
-                            startTime = taskEndTime;
-                            // Remove the task from the unassigned tasks list if it has not been removed already
-                            unassignedTasks = unassignedTasks.filter(unassignedTask => unassignedTask.id !== task.id);
-                            break;
-                        } else {
-                            // Update the start time to the end time of the event
-                            startTime = new Date(event.endDate);
-                        }
-                    }
-                
-                    // if (!freeSpotFound) {
-                    //     // Allocate the task in the remaining time on the current day
-                    //     let endTime = new Date(day.getTime() + 24 * 60 * 60 * 1000);
-                    //     if (taskEndTime <= endTime) {
-                    //     task.startTime = startTime;
-                    //     task.endTime = taskEndTime;
-                    //     startTime = taskEndTime;
-                    //     }
-                    // }
-                }
-            }
-        } 
-        // timespan is just 1 day
-        else {        
-            // Sort the events on the current day by end time
-            events.sort((event1, event2) => {
-                return event1.endDate - event2.endDate;
-            });
-        
-            // Allocate tasks in the free spots on the current day
-            let startTime = new Date(day);
-            for (let task of tasks) {
-                let taskEndTime = new Date(startTime.getTime() + task.duration);
-            
-                // Check if the task overlaps with any events on the current day
-                for (let event of events) {
+                let startTime = new Date(day.getDate());
+                let taskEndTime = new Date(startTime.getTime() + tasks[i].duration);
+                for (let event of eventsOnDay) {
                     if (taskEndTime <= event.startDate) {
+                        console.log("We made it");
                         // Allocate the task in the free spot
-                        task.startTime = startTime;
-                        task.endTime = taskEndTime;
+                        tasks[i].startTime = startTime;
+                        tasks[i].endTime = taskEndTime;
                         startTime = taskEndTime;
+                        day.tasks.push(tasks[i]);
+                        tasks.splice(i, 1)
+                        i--;
+                        allocatedTask = true;
                         break;
                     } else {
                         // Update the start time to the end time of the event
                         startTime = new Date(event.endDate);
                     }
                 }
-            
-                // if (!freeSpotFound) {
-                //     // Allocate the task in the remaining time on the current day
-                //     let endTime = new Date(day.getTime() + 24 * 60 * 60 * 1000);
-                //     if (taskEndTime <= endTime) {
-                //     task.startTime = startTime;
-                //     task.endTime = taskEndTime;
-                //     startTime = taskEndTime;
-                //     }
-                // }
-            }
-        }   
+            }         
+        } 
     }
 }
 
