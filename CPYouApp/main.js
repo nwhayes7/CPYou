@@ -82,13 +82,10 @@ function generateDays(weekObj, weekBackend) {
 
     // get summary of the day
     const summary = weekBackend.getDays()[i].getSummary();
-    console.log(summary[2]);
-    console.log();
-    console.log(summary[4]);
 
     loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
         const formattedDate = weekBackend.getDays()[i].getDate().toLocaleString('en-US', options);
-        const textGeometry = new TextGeometry(formattedDate + '\nEvent Time: ' + summary[2] + '\nTask Time: ' + summary[3] + '\nFree Time: ' + summary[4], {
+        const textGeometry = new TextGeometry(formattedDate + '\nEvent Time: ' + summary[2].toFixed(2) + '\nTask Time: ' + summary[3].toFixed(2) + '\nFree Time: ' + summary[4].toFixed(2), {
         font: font,
         size: .4,
         height: .04,

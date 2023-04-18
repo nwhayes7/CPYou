@@ -169,10 +169,11 @@ export class Day {
     constructor(date) {
         this.date = date;
         this.events = [];
+        this.events.push(createRandomEvent(date));
         this.tasks = [];
         let numEvents = 3
         for (let i = 1; i <= numEvents; i++) {
-            const t = new Task("task " + i, "description", new Date("2023-04-01"), 3, Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30);
+            const t = new Task("task " + i, "description", new Date("2023-04-01"), 3, (Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30) * 60000);
             this.tasks.push(t);
         }
     }
@@ -338,19 +339,15 @@ export class Task {
 }
 
 export class Event {
-    counter = 0;
-    constructor(name, description, startDate, endDate, location, deadline, priority) {
-        this.id = counter++;
+    static counter = 0;
+    constructor(name, description, startDate, endDate, location, priority) {
+        this.id = Event.counter++;
         this.name = name;
         this.description = description;
-        this.creationTime = creationTime;
+        this.creationTime = new Date();
         this.startDate = startDate;
         this.endDate = endDate;
         this.location = location;
-        // The user will input a "deadline" for an event. This will be converted to
-        // seconds since the epoch; smaller values means a sooner deadline means 
-        // a higher priority.
-        this.deadline = deadline;
         this.priority = priority;
     }
     getName() {
@@ -375,3 +372,27 @@ export class Event {
         return this.priority;
     }
 }
+
+function createRandomEvent(date) {
+    const names = ['Birthday Party', 'Conference', 'Music Festival', 'Wedding', 'Charity Event'];
+    const descriptions = ['A fun event for friends and family', 'A gathering of professionals', 'A celebration of music and culture', 'A beautiful wedding ceremony', 'A fundraising event for a good cause'];
+    const locations = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Miami'];
+    const priorities = [3, 2, 1];
+  
+    const randomName = names[Math.floor(Math.random() * names.length)];
+    const randomDescription = descriptions[Math.floor(Math.random() * descriptions.length)];
+  
+    // Generate a random start date for the event in the morning of the given date
+    const randomStartHour = Math.floor(Math.random() * 4) + 8; // Start time between 8 AM and 11 AM
+    const randomStartDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), randomStartHour, 0, 0);
+  
+    // Generate a random end date for the event that is 1 to 3 hours after the start date
+    const randomEndHour = randomStartHour + Math.floor(Math.random() * 3) + 1; // End time between 1 and 3 hours after start time
+    const randomEndDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), randomEndHour, 0, 0);
+  
+    const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+    const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
+  
+    return new Event(randomName, randomDescription, randomStartDate, randomEndDate, randomLocation, randomPriority);
+}
+  
