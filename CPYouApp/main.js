@@ -26,18 +26,26 @@ function generateSchedule(dayObj, dayBackend) {
   let i = 0 //
   for (let j = dayBackend.getEventsAndTasks().length - 1; j >= 0; j--) { // loop through events and tasks
     let newEventOrTask = dayBackend.getEventsAndTasks()[j]
-    let newEventOrTaskName = newEventOrTask.getName()
+    let color = 0xC06C84
+    let printString = newEventOrTask.getName()
     if (newEventOrTask instanceof Event) {
       currHours = (newEventOrTask.getEndDate() - newEventOrTask.getStartDate())/30 // get currHours from current task
+      if (currHours >= 1.5) {
+        printString = printString + "\n" + newEventOrTask.getStartDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " - " + newEventOrTask.getEndDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+      }
     } else if (newEventOrTask instanceof Task) {
+      color = 0xf67280
       currHours = newEventOrTask.getDuration()/30 // get currHours from current task
+      if (currHours >= 1.5) {
+        printString = printString + "\n" + newEventOrTask.getDuration() + " minutes"
+      }
     }
     const geometry = new THREE.BoxGeometry(5, currHours, 5)
-    const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
+    const material = new THREE.MeshStandardMaterial({ color: color  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
 
     loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-      const textGeometryTask = new TextGeometry(dayBackend.getTasks()[j].getName(), {
+      const textGeometryTask = new TextGeometry(printString, {
         font: font,
         size: .4,
         height: .04,
