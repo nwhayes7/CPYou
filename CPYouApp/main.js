@@ -52,14 +52,24 @@ function generateTasks(dayObj, dayBackend) {
 }
 
 function generateDays(weekObj, weekBackend) {
+  // for date formatting
+  const options = { month: 'long', day: 'numeric' };
+
   let x = 3
   for (let i = 0; i < weekBackend.getDays().length; i++) {
     const geometry = new THREE.BoxGeometry(5, 1, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xc06c84 })
     const cube = new THREE.Mesh(geometry, material) // create new cube mesh
 
+    // get summary of the day
+    const summary = weekBackend.getDays()[i].getSummary();
+    console.log(summary[2]);
+    console.log();
+    console.log(summary[4]);
+
     loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-      const textGeometry = new TextGeometry('June1\nI love pandas', {
+        const formattedDate = weekBackend.getDays()[i].getDate().toLocaleString('en-US', options);
+        const textGeometry = new TextGeometry(formattedDate + '\nEvent Time: ' + summary[2] + '\nTask Time: ' + summary[3] + '\nFree Time: ' + summary[4], {
         font: font,
         size: .4,
         height: .04,

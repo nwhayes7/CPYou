@@ -3,10 +3,10 @@ export class Month {
         // Months are a list of weeks
         this.index = index;
         this.weeks = [];
-        this.weeks.push(new Week(0));
-        this.weeks.push(new Week(1));
-        this.weeks.push(new Week(2));
         this.weeks.push(new Week(3));
+        this.weeks.push(new Week(2));
+        this.weeks.push(new Week(1));
+        this.weeks.push(new Week(0));
     }
 
     getWeeks() {
@@ -90,13 +90,13 @@ export class Week {
     constructor(i) {
         // Weeks are a list of days
         this.days = [];
-        this.days.push(new Day(new Date(2023, 1, i*7 + 1)));
-        this.days.push(new Day(new Date(2023, 1, i*7 + 2)));
-        this.days.push(new Day(new Date(2023, 1, i*7 + 3)));
-        this.days.push(new Day(new Date(2023, 1, i*7 + 4)));
-        this.days.push(new Day(new Date(2023, 1, i*7 + 5)));
-        this.days.push(new Day(new Date(2023, 1, i*7 + 6)));
         this.days.push(new Day(new Date(2023, 1, i*7 + 7)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 6)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 5)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 4)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 3)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 2)));
+        this.days.push(new Day(new Date(2023, 1, i*7 + 1)));
     }
 
     getDays() {
@@ -172,7 +172,7 @@ export class Day {
         this.tasks = [];
         let numEvents = 3
         for (let i = 1; i <= numEvents; i++) {
-            const t = new Task("task " + i, "description", new Date("2023-04-01"), 3, Math.floor(Math.random() * 12 + 1) * 15);
+            const t = new Task("task " + i, "description", new Date("2023-04-01"), 3, Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30);
             this.tasks.push(t);
         }
     }
@@ -277,17 +277,18 @@ export class Day {
                 eventDuration += item.endDate.getTime() - item.startDate.getTime();
             } else if (item instanceof Task) {
                 taskCount++;
-                taskDuration += item.endTime.getTime() - item.startTime.getTime();
+                taskDuration += item.duration;
             }
         }
 
-        // Convert event and task duration from ms to minutes
-        eventDuration /= 60000;
-        taskDuration /= 60000;
-        let freeDuration = numMinutes - eventDuration - taskDuration;
-        
+        // Convert event duration from ms to hours
+        eventDuration /= 3600000;
+        // Convert task duration from minutes to hours
+        taskDuration /= 60;
+        let freeDuration = (numMinutes / 60) - eventDuration - taskDuration;
+
         // Return the number of events and tasks, and the duration of events, tasks, and free space (in minutes)
-        return(eventCount, taskCount, eventDuration, taskDuration, freeDuration);
+        return [eventCount, taskCount, eventDuration, taskDuration, freeDuration];
     }
 }
 
