@@ -24,13 +24,13 @@ function generateTasks(dayObj, dayBackend) {
   let lastHours = 1 // initial hours must be 1
   let currHours = 2 //
   let i = 0 //
-  for (let i = 0; i < dayBackend.getTasks().length; i++) { // loop through task list
+  for (let j = 0; j < dayBackend.getTasks().length; j++) { // loop through task list
     const geometry = new THREE.BoxGeometry(5, currHours, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
 
     loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-      const textGeometryTask = new TextGeometry('Event Text', {
+      const textGeometryTask = new TextGeometry(dayBackend.getTasks()[j].getName(), {
         font: font,
         size: .4,
         height: .04,
