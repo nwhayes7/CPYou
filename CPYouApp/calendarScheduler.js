@@ -214,14 +214,11 @@ class TaskScheduler {
             let days = []
             for (let week of weeks) {
                 for (let day of week.getDays()) {
-                    console.log("Current day: " + day)
                     days.push(day)
                 }
             }
-            console.log("days" + days);
             for (let i = 0; i < tasks.length; i++) {
                 let day = days[i]
-                console.log(day)
                 let allocatedTask = false;
                 let eventsOnDay = day.getEvents();
                 // Sort the events on the current day by end time
@@ -233,7 +230,6 @@ class TaskScheduler {
                 let taskEndTime = new Date(startTime.getTime() + tasks[i].duration);
                 for (let event of eventsOnDay) {
                     if (taskEndTime <= event.startDate) {
-                        console.log("We made it");
                         // Allocate the task in the free spot
                         tasks[i].startTime = startTime;
                         tasks[i].endTime = taskEndTime;

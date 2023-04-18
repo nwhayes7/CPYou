@@ -243,35 +243,36 @@ document.getElementById("SJF").addEventListener("click", toggleSJF, false);
 
 
 function toggleFCFS() {
-	console.log("BEEEEEP");	// toggles between 0 and 1
   console.log(month.getTasks());
   calendar.setSchedulerAlgorithm("FCFS");
   calendar.runScheduler(month);
   console.log(month.getTasks());
 }
 function toggleDeadline() {
-  console.log("BEEEEEP");	// toggles between 0 and 1
   calendar.setSchedulerAlgorithm("Deadline");
+  console.log(month.getTasks());
   calendar.runScheduler(month);
+  console.log(month.getTasks());
 }
 function togglePriority() {
   calendar.setSchedulerAlgorithm("Priority");
+  console.log(month.getTasks());
   calendar.runScheduler(month);
   // Clear the scene
   // Rebuild scene with new backend values
+  console.log(month.getTasks())
   generateWeeks(month) // get weeks objects
   generateTaskList(weeks[0].children[7].position.y) // generate task list
-
 }
 function toggleRoundRobin() {
-  console.log("BEEEEEP");	// toggles between 0 and 1
   calendar.setSchedulerAlgorithm("RR");
   calendar.runScheduler(month);
 }
 function toggleSJF() {
-  console.log("BEEEEEP");	// toggles between 0 and 1
+  console.log(month.getTasks());
   calendar.setSchedulerAlgorithm("SJF");
   calendar.runScheduler(month);
+  console.log(month.getTasks())
 }
 
 animate()
