@@ -195,7 +195,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio) // set pixel ratio to match device
 renderer.setSize(window.innerWidth, window.innerHeight) // set renderer size to match window size
-camera.position.setY(43) // move camera up 50 units
+camera.position.setY(45) // move camera up 50 units
 camera.rotateX(90) // rotate camera to face
 const controls = new OrbitControls(camera, renderer.domElement) // listen to dom events on mouse and update camera positon
 
