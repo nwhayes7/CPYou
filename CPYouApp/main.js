@@ -20,12 +20,12 @@ function addStar() {
 }
 
 function generateTasks(dayObj, dayBackend) {
-  let yPos = 0 // current y pos
-  let lastHours = 1 // initial hours must be 1
+  let yPos = -.5 // current y pos
+  let lastHours = 0 // initial hours must be 1
   let currHours = 1 // get currHours from current task
   let i = 0 //
-  for (let j = 0; j < dayBackend.getTasks().length; j++) { // loop through task list
-    currHours = dayBackend.getTasks()[j].getDuration()/60 // get currHours from current task
+  for (let j = dayBackend.getTasks().length - 1; j >= 0; j--) { // loop through task list
+    currHours = dayBackend.getTasks()[j].getDuration()/30 // get currHours from current task
     const geometry = new THREE.BoxGeometry(5, currHours, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
@@ -43,16 +43,21 @@ function generateTasks(dayObj, dayBackend) {
       task.add(textTask)
     })
 
-    yPos = yPos - (lastHours/2) -.5 - (currHours/2) // update y pos
+    yPos = yPos + (lastHours/2) +.5 + (currHours/2) // update y pos
     task.position.set(0, yPos, 0) // set cube position
     dayObj.add(task) // add cube to day object
-    lastHours = currHours
-    i++
+    lastHours = currHours // update lastHours
+    if (j == 0) {
+      yPos = yPos + (currHours/2) + 1
+    }
   }
+  return yPos;
 }
 
 function generateDays(weekObj, weekBackend) {
+  const calFace = new THREE.Object3D()
   let x = 3
+  let yMax = 0
   for (let i = 0; i < weekBackend.getDays().length; i++) {
     const geometry = new THREE.BoxGeometry(5, 1, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xc06c84 })
@@ -74,31 +79,43 @@ function generateDays(weekObj, weekBackend) {
 
     // create day object and assign position
     const dayObj = new THREE.Object3D() // create new day object
-    dayObj.add(cube)  // add cube to day object
+    let yPos = generateTasks(dayObj, weekBackend.getDays()[i]) // generate tasks for day
+    yMax = Math.max(yPos, yMax)
+    // cube.position.setY(yPos)
+    cube.position.setZ(dayObj.position.z)
+    // dayObj.add(cube)  // add cube to day object
 
-    generateTasks(dayObj, weekBackend.getDays()[i]) // generate tasks for day
+    dayObj.position.set(x*7, 0, 0) // set x
+    cube.position.setX(dayObj.position.x)
 
-    dayObj.position.set(x*7, -.5, 0) // set x and y position of day object
+    calFace.add(cube)
 
-    weekObj.add(dayObj) 
+    weekObj.add(dayObj)
     x--
   }
+  weekObj.add(calFace)
+  return yMax
 }
 
 function generateWeeks(monthBackend = null) {
   let weeks  = []
   let z = 1
+  let yMax = 0
   // Implentation with backend connection
   if (monthBackend != null) {
     for (let i = 0; i < monthBackend.getWeeks().length; i++) {
       console.log(i);
       const week = new THREE.Object3D()
-      generateDays(week, monthBackend.getWeeks()[i]);
+      yMax = Math.max(generateDays(week, monthBackend.getWeeks()[i]), yMax)
       week.position.set(0, 0, z * 7 + 3.5)
       weeks.push(week)
       scene.add(week)
       z--
     }
+    for (let i = 0; i < monthBackend.getWeeks().length; i++) {
+      const calFace = weeks[i].children[7]
+      calFace.position.setY(yMax)
+    }  
   }
   // Original implementation
   else {
@@ -136,7 +153,6 @@ function generateTaskList() {
       task.add(text)
   })
     x++
-
     scene.add(task) // add cube to scene
   }
 }
@@ -160,7 +176,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio) // set pixel ratio to match device
 renderer.setSize(window.innerWidth, window.innerHeight) // set renderer size to match window size
-camera.position.setY(23) // move camera up 50 units
+camera.position.setY(37) // move camera up 50 units
 camera.rotateX(90) // rotate camera to face
 const controls = new OrbitControls(camera, renderer.domElement) // listen to dom events on mouse and update camera positon
 
