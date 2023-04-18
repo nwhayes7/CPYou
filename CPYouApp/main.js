@@ -217,6 +217,12 @@ console.log(month instanceof Month);
 let weeks = generateWeeks(month) // get weeks objects
 generateTaskList() // generate task list
 
+document.getElementById("RES").addEventListener("click", toggleReschedule, false);
+
+function toggleReschedule() {
+	console.log("BEEEEEP");	// toggles between 0 and 1
+}
+
 animate()
 
 
