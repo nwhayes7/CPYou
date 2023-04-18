@@ -170,9 +170,9 @@ export class Day {
         this.date = date;
         this.events = [];
         this.tasks = [];
-        let numEvents = Math.floor(Math.random() * 5) + 1
+        let numEvents = 3
         for (let i = 1; i <= numEvents; i++) {
-            const t = new Task("task " + i, "description", new Date("2023-04-01"), 3, 90)
+            const t = new Task("task " + i, "description", new Date("2023-04-01"), 3, Math.floor(Math.random() * 12 + 1) * 15);
             this.tasks.push(t);
         }
     }
