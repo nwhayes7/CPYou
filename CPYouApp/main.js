@@ -231,7 +231,7 @@ const loader = new FontLoader()
 let calendar = new Calendar();
 let month = calendar.getMonths()[0];
 console.log(month instanceof Month);
-const monthObj = new THREE.Object3D() // create new month object
+let monthObj = new THREE.Object3D() // create new month object
 let weeks = generateWeeks(month, monthObj) // get weeks objects
 scene.add(monthObj)
 // scene.remove(monthObj)
@@ -263,7 +263,10 @@ function togglePriority() {
   // Clear the scene
   // Rebuild scene with new backend values
   console.log(month.getTasks())
-  generateWeeks(month) // get weeks objects
+  scene.remove(monthObj)
+  monthObj = new THREE.Object3D() // create new month object
+  scene.add(monthObj)
+  generateWeeks(month, monthObj) // get weeks objects
   generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
 function toggleRoundRobin() {
