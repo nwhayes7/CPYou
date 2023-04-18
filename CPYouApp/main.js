@@ -116,7 +116,7 @@ function generateDays(weekObj, weekBackend) {
   return yMax
 }
 
-function generateWeeks(monthBackend = null) {
+function generateWeeks(monthBackend = null, monthObj = null) {
   let weeks  = []
   let z = 1
   let yMax = 0
@@ -128,7 +128,7 @@ function generateWeeks(monthBackend = null) {
       yMax = Math.max(generateDays(week, monthBackend.getWeeks()[i]), yMax)
       week.position.set(0, 0, z * 7 + 3.5)
       weeks.push(week)
-      scene.add(week)
+      monthObj.add(week)
       z--
     }
     for (let i = 0; i < monthBackend.getWeeks().length; i++) {
@@ -143,7 +143,6 @@ function generateWeeks(monthBackend = null) {
       generateDay(week)
       week.position.set(0, 0, z * 7 + 3.5)
       weeks.push(week)
-      scene.add(week)
       z--
     }
   }
@@ -232,7 +231,10 @@ const loader = new FontLoader()
 let calendar = new Calendar();
 let month = calendar.getMonths()[0];
 console.log(month instanceof Month);
-let weeks = generateWeeks(month) // get weeks objects
+const monthObj = new THREE.Object3D() // create new month object
+let weeks = generateWeeks(month, monthObj) // get weeks objects
+scene.add(monthObj)
+// scene.remove(monthObj)
 generateTaskList(weeks[0].children[7].position.y) // generate task list
 
 document.getElementById("FCFS").addEventListener("click", toggleFCFS, false);
