@@ -21,29 +21,24 @@ function addStar() {
 
 function generateTasks(dayObj) {
   let yPos = 0 // current y pos
-  let hours = 4 // event hours
-  let x = 0 //
-  while (x < 10) { // loop through task list
-    const geometry = new THREE.BoxGeometry(5, hours, 5)
+  let lastHours = 1 // initial hours must be 1
+  let currHours = 2 //
+  let i = 0 //
+  while (i < 2) { // loop through task list
+    const geometry = new THREE.BoxGeometry(5, currHours, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
-    task.position.set(dayObj.x, yPos, dayObj.z) // set cube position
-    yPos = yPos + hours + 3
-
-    dayObj.add(task)
-    x++
-
-    scene.add(dayObj) // add cube to scene
+    yPos = yPos - (lastHours/2) -.5 - (currHours/2) // update y pos
+    task.position.set(0, yPos, 0) // set cube position
+    dayObj.add(task) // add cube to day object
+    lastHours = currHours
+    i++
   }
 }
 
-function generateDay(weekObj) {
+function generateDays(weekObj) {
   let x = 3
   while (x > -4) {
-    // create day object and assign position
-    const dayObj = new THREE.Object3D()
-    dayObj.position.set(x*7, -.5, 0)
-
     const geometry = new THREE.BoxGeometry(5, 1, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xc06c84 })
     const cube = new THREE.Mesh(geometry, material) // create new cube mesh
@@ -61,9 +56,15 @@ function generateDay(weekObj) {
       text.rotateX(-1.6)
       cube.add(text)
     })
-    dayObj.add(cube)  
 
-    generateTasks(dayObj)
+    // create day object and assign position
+    const dayObj = new THREE.Object3D() // create new day object
+
+    dayObj.add(cube)  // add cube to day object
+
+    generateTasks(dayObj) // generate tasks for day
+
+    dayObj.position.set(x*7, -.5, 0) // set x and y position of day object
   
     weekObj.add(dayObj) 
     x--
@@ -79,7 +80,7 @@ function generateWeeks(month = null) {
     for (let i = 0; i < month.getWeeks().length; i++) {
       console.log(i);
       const week = new THREE.Object3D()
-      generateDay(week)
+      generateDays(week)
       week.position.set(0, 0, z * 7 + 3.5)
       weeks.push(week)
       scene.add(week)
