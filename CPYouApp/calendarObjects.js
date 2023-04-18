@@ -170,6 +170,10 @@ export class Day {
         this.date = date;
         this.events = [];
         this.tasks = [];
+        let numEvents = Math.floor(Math.random() * 5) + 1
+        for (let i = 0; i < numEvents; i++) {
+            this.tasks.push(new Task("task " + i, "description", new Date("2023-04-01"), 3, 90));
+        }
     }
     getDate() {
         return this.date;
@@ -287,9 +291,9 @@ export class Day {
 }
 
 export class Task {
-    counter = 0;
+    static counter = 0;
     constructor(name, description, dueDate, priority, duration) {
-        this.id = ++counter;
+        this.id = ++Task.counter;
         // String
         this.name = name;
         // String

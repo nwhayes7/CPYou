@@ -19,12 +19,12 @@ function addStar() {
   scene.add(star) // add star to scene
 }
 
-function generateTasks(dayObj) {
+function generateTasks(dayObj, dayBackend) {
   let yPos = 0 // current y pos
   let lastHours = 1 // initial hours must be 1
   let currHours = 2 //
   let i = 0 //
-  while (i < 2) { // loop through task list
+  for (let i = 0; i < dayBackend.getTasks().length; i++) { // loop through task list
     const geometry = new THREE.BoxGeometry(5, currHours, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
@@ -50,9 +50,9 @@ function generateTasks(dayObj) {
   }
 }
 
-function generateDays(weekObj) {
+function generateDays(weekObj, weekBackend) {
   let x = 3
-  while (x > -4) {
+  for (let i = 0; i < weekBackend.getDays().length; i++) {
     const geometry = new THREE.BoxGeometry(5, 1, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xc06c84 })
     const cube = new THREE.Mesh(geometry, material) // create new cube mesh
@@ -74,7 +74,9 @@ function generateDays(weekObj) {
     // create day object and assign position
     const dayObj = new THREE.Object3D() // create new day object
     dayObj.add(cube)  // add cube to day object
-    generateTasks(dayObj) // generate tasks for day
+
+    generateTasks(dayObj, weekBackend.getDays()[i]) // generate tasks for day
+
     dayObj.position.set(x*7, -.5, 0) // set x and y position of day object
 
     weekObj.add(dayObj) 
@@ -82,16 +84,15 @@ function generateDays(weekObj) {
   }
 }
 
-function generateWeeks(month = null) {
+function generateWeeks(monthBackend = null) {
   let weeks  = []
   let z = 1
   // Implentation with backend connection
-  if (month != null) {
-    console.log(month.getWeeks());
-    for (let i = 0; i < month.getWeeks().length; i++) {
+  if (monthBackend != null) {
+    for (let i = 0; i < monthBackend.getWeeks().length; i++) {
       console.log(i);
       const week = new THREE.Object3D()
-      generateDays(week)
+      generateDays(week, monthBackend.getWeeks()[i]);
       week.position.set(0, 0, z * 7 + 3.5)
       weeks.push(week)
       scene.add(week)
