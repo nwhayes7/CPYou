@@ -14,7 +14,7 @@ function addStar() {
   const material = new THREE.MeshStandardMaterial({ color: 0xffffff })
   const star = new THREE.Mesh(geometry, material) // create new star mesh
 
-  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100)) // create random x, y, z coordinates
+  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(150)) // create random x, y, z coordinates
   star.position.set(x, y, z) // set star position
   scene.add(star) // add star to scene
 }
@@ -150,13 +150,13 @@ function generateWeeks(monthBackend = null) {
   return weeks
 } 
 
-function generateTaskList() {
+function generateTaskList(y) {
   let x = 0 // initialize x
   while (x < 10 || x == 10) { // loop through tsk list up to ten tasks
     const geometry = new THREE.BoxGeometry(5, 1, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
-    task.position.set(-21 + x*7, -.5, 23) // set cube position
+    task.position.set(-21 + x*7, y, -22) // set cube position
     
     loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
       const textGeometry = new TextGeometry('June1\nI love pandas', {
@@ -195,7 +195,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio) // set pixel ratio to match device
 renderer.setSize(window.innerWidth, window.innerHeight) // set renderer size to match window size
-camera.position.setY(42) // move camera up 50 units
+camera.position.setY(43) // move camera up 50 units
 camera.rotateX(90) // rotate camera to face
 const controls = new OrbitControls(camera, renderer.domElement) // listen to dom events on mouse and update camera positon
 
@@ -222,7 +222,7 @@ let calendar = new Calendar();
 let month = calendar.getMonths()[0];
 console.log(month instanceof Month);
 let weeks = generateWeeks(month) // get weeks objects
-generateTaskList() // generate task list
+generateTaskList(weeks[0].children[7].position.y) // generate task list
 
 document.getElementById("RES").addEventListener("click", toggleReschedule, false);
 
