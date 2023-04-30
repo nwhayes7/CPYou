@@ -245,24 +245,25 @@ document.getElementById("SJF").addEventListener("click", toggleSJF, false);
 
 
 function toggleFCFS() {
-  console.log(month.getTasks());
   calendar.setSchedulerAlgorithm("FCFS");
   calendar.runScheduler(month);
-  console.log(month.getTasks());
 }
 function toggleDeadline() {
   calendar.setSchedulerAlgorithm("Deadline");
-  console.log(month.getTasks());
-  calendar.runScheduler(month);
-  console.log(month.getTasks());
-}
-function togglePriority() {
-  calendar.setSchedulerAlgorithm("Priority");
-  console.log(month.getTasks());
   calendar.runScheduler(month);
   // Clear the scene
   // Rebuild scene with new backend values
-  console.log(month.getTasks())
+  scene.remove(monthObj)
+  monthObj = new THREE.Object3D() // create new month object
+  scene.add(monthObj)
+  generateWeeks(month, monthObj) // get weeks objects
+  generateTaskList(weeks[0].children[7].position.y) // generate task list
+}
+function togglePriority() {
+  calendar.setSchedulerAlgorithm("Priority");
+  calendar.runScheduler(month);
+  // Clear the scene
+  // Rebuild scene with new backend values
   scene.remove(monthObj)
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
@@ -272,12 +273,24 @@ function togglePriority() {
 function toggleRoundRobin() {
   calendar.setSchedulerAlgorithm("RR");
   calendar.runScheduler(month);
+  // Clear the scene
+  // Rebuild scene with new backend values
+  scene.remove(monthObj)
+  monthObj = new THREE.Object3D() // create new month object
+  scene.add(monthObj)
+  generateWeeks(month, monthObj) // get weeks objects
+  generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
 function toggleSJF() {
-  console.log(month.getTasks());
   calendar.setSchedulerAlgorithm("SJF");
   calendar.runScheduler(month);
-  console.log(month.getTasks())
+  // Clear the scene
+  // Rebuild scene with new backend values
+  scene.remove(monthObj)
+  monthObj = new THREE.Object3D() // create new month object
+  scene.add(monthObj)
+  generateWeeks(month, monthObj) // get weeks objects
+  generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
 
 animate()

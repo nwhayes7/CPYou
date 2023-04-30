@@ -101,6 +101,7 @@ class TaskScheduler {
     // and then sort them according to the algorithm set
     runScheduler(timespan, unassignedTasks) {
         let tasks = timespan.getTasks();
+        console.log("Tasks length: " + tasks.length)
         timespan.removeTasks();
         tasks.concat(unassignedTasks);
         let events = timespan.getEvents();
@@ -155,42 +156,30 @@ class TaskScheduler {
                 break;
             case "RR":
                 console.log("RR");
+                let tempTasksArray = [...tasks];
+                let finalTasksArray = [];
+                let timeQuantum = 60;
 
-                let remainingTime = new Array(tasks.length);
-                let done = false;
-                let tempTasksArray = []
+                console.log("Before RR: " + tasks.length);
 
-                // Initialize the remaining time of each task to the task's burst time AKA duration
-                for (let i = 0; i < tasks.length; i++) {
-                  remainingTime[i] = tasks[i].duration;
-                }
-              
-                // Continue processing the tasks until all tasks are complete AKA fully scheduled
-                while (!done) {
-                  done = true;
-              
-                  // Process each task for the time quantum or until the task is done
-                  for (let i = 0; i < tasks.length; i++) {
-                    if (remainingTime[i] > 0) {
-                      done = false;
-              
-                      // If the task can be completed in the time quantum, finish the task
-                      if (remainingTime[i] <= timeQuantum) {
-                        tempTasksArray.push(tasks[i].createSmallerTask(remainingTime[i]));
-                        remainingTime[i] = 0;
-                      }
-                      // Otherwise, process the task for the time quantum and move it to the back of the queue
-                      else {
-                        // Create a new task that has a shorter duration
-                        tempTasksArray.push(tasks[i].createSmallerTask(timeQuantum));
-                        remainingTime[i] -= timeQuantum;
-                      }
+                for (let i = 0; i < tempTasksArray; i++) {
+                    // If the task can be completed in the time quantum, finish the task
+                    if (tempTasksArray[i].duration <= timeQuantum) {
+                    finalTasksArray.push(tempTasksArray[i]);
+                    tempTasksArray.splice(i, 1);
+                    i--;
+                    } else {
+                    // Create a new task that has a shorter duration
+                    finalTasksArray.push(tempTasksArray[i].createSmallerTask(timeQuantum));
+                    tempTasksArray[i].duration -= timeQuantum;
                     }
-                  }
                 }
 
+                // Set the temp tasks as the tasks to be scheduled
+                tasks = tempTasksArray;
 
-
+                console.log("After RR: " + tasks.length);
+            
                 break;
             case "SJF":
                 console.log("SJF");
@@ -209,44 +198,51 @@ class TaskScheduler {
         // Algorithm then interleaves tasks with events so they do not overlap
         let weeks = timespan.getWeeks();
 
-        if (timespan instanceof Month || timespan instanceof Week) {
-            // Iterate through the days in the timespan
-            let days = []
-            for (let week of weeks) {
-                for (let day of week.getDays()) {
-                    days.push(day)
-                }
-            }
-            for (let i = 0; i < tasks.length; i++) {
-                let day = days[i]
-                let allocatedTask = false;
+        // Iterate through the days in the timespan
+        for (let i = 0; i < weeks.length; i++) {
+            let week = weeks[i];
+            let days = week.getDays();
+
+            // k is the task index
+            let k = 0;
+            for (let j = 0; j < days.length; j++) {
+                let day = days[j];
                 let eventsOnDay = day.getEvents();
+                // Empty the current tasks of the day
+                day.tasks = [];
+
                 // Sort the events on the current day by end time
                 eventsOnDay.sort((event1, event2) => {
                     return event1.endDate - event2.endDate;
                 });
-                // Allocate tasks in the free spots on the current day
-                let startTime = new Date(day.getDate());
-                let taskEndTime = new Date(startTime.getTime() + tasks[i].duration);
-                for (let event of eventsOnDay) {
-                    if (taskEndTime <= event.startDate) {
-                        // Allocate the task in the free spot
-                        tasks[i].startTime = startTime;
-                        tasks[i].endTime = taskEndTime;
-                        startTime = taskEndTime;
-                        day.tasks.push(tasks[i]);
-                        tasks.splice(i, 1)
-                        i--;
-                        allocatedTask = true;
-                        break;
-                    } else {
-                        // Update the start time to the end time of the event
-                        startTime = new Date(event.endDate);
+
+                let allocatedTasks = 0;
+                // Currently, only allocate 3 tasks per day
+                while (allocatedTasks < 3 && k < tasks.length) {
+
+                    // Allocate tasks in the free spots on the current day
+                    let startTime = new Date(day.getDate());
+                    let taskEndTime = new Date(startTime.getTime() + tasks[k].duration);
+
+                    for (let event of eventsOnDay) {
+                        if (taskEndTime <= event.startDate) {
+                            // Allocate the task in the free spot
+                            tasks[k].startTime = startTime;
+                            tasks[k].endTime = taskEndTime;
+                            startTime = taskEndTime;
+                            day.tasks.push(tasks[k]);
+                            k++;
+                            allocatedTasks++;
+                            break;
+                        } else {
+                            // Update the start time to the end time of the event
+                            startTime = new Date(event.endDate);
+                        }
                     }
                 }
-            }         
-        } 
-    }
+            }
+        }
+    } 
 }
 
 function main() {

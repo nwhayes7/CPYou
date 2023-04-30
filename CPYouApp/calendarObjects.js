@@ -99,6 +99,7 @@ export class Month {
 export class Week {
     constructor(i) {
         // Weeks are a list of days
+        this.i = i;
         this.days = [];
         this.days.push(new Day(new Date(2023, 1, i*7 + 7)));
         this.days.push(new Day(new Date(2023, 1, i*7 + 6)));
@@ -147,6 +148,10 @@ export class Week {
         return tasks;
     }
 
+    getId() {
+        return this.i;
+    }
+
     // Return summary statistics of the week
     getSummary() {
         const numMinutes = 7 * 24 * 60;
@@ -182,9 +187,9 @@ export class Day {
         this.events.push(createRandomEvent(date));
         this.tasks = [];
         //if (isAfterFebruary22(date)) {
-            let numEvents = 3
+            let numEvents = 1
             for (let i = 1; i <= numEvents; i++) {
-                const t = new Task("task " + i, "description", new Date("2023-04-01"), Math.floor(Math.random() * 4) + 1, (Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30) * 60000);
+                const t = new Task("task " + i, "description", createRandomDate(), Math.floor(Math.random() * 4) + 1, 120 * 60000);// (Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30) * 60000);
                 this.tasks.push(t);
             }
         //}
@@ -387,6 +392,19 @@ export class Event {
 }
 
 // For testing:
+function createRandomDate() {
+    // Define start and end dates
+    const startDate = new Date(2023, 3, 1); // 4-1-2023
+    const endDate = new Date(2023, 3, 15); // 4-15-2023
+
+    // Generate a random number of milliseconds between the start and end dates
+    const randomMs = Math.floor(Math.random() * (endDate.getTime() - startDate.getTime() + 1)) + startDate.getTime();
+
+    // Create a new Date object from the random number of milliseconds
+    const randomDate = new Date(randomMs);
+    return randomDate;
+}
+
 function createRandomEvent(date) {
     const names = ['Birthday Party', 'Conference', 'Music Festival', 'Wedding', 'Charity Event'];
     const descriptions = ['A fun event for friends and family', 'A gathering of professionals', 'A celebration of music and culture', 'A beautiful wedding ceremony', 'A fundraising event for a good cause'];
