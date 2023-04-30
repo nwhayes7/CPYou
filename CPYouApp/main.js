@@ -123,7 +123,6 @@ function generateWeeks(monthBackend = null, monthObj = null) {
   // Implentation with backend connection
   if (monthBackend != null) {
     for (let i = 0; i < monthBackend.getWeeks().length; i++) {
-      console.log(i);
       const week = new THREE.Object3D()
       yMax = Math.max(generateDays(week, monthBackend.getWeeks()[i]), yMax)
       week.position.set(0, 0, z * 7 + 3.5)
@@ -247,6 +246,13 @@ document.getElementById("SJF").addEventListener("click", toggleSJF, false);
 function toggleFCFS() {
   calendar.setSchedulerAlgorithm("FCFS");
   calendar.runScheduler(month);
+  // Clear the scene
+  // Rebuild scene with new backend values
+  scene.remove(monthObj)
+  monthObj = new THREE.Object3D() // create new month object
+  scene.add(monthObj)
+  generateWeeks(month, monthObj) // get weeks objects
+  generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
 function toggleDeadline() {
   calendar.setSchedulerAlgorithm("Deadline");
