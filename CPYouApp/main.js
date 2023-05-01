@@ -290,7 +290,7 @@ document.getElementById("RoundRobin").addEventListener("click", toggleRoundRobin
 document.getElementById("SJF").addEventListener("click", toggleSJF, false);
 document.getElementById("W1").addEventListener("click", function(){ week1View(weeks, taskList); }, false);
 document.getElementById("W2").addEventListener("click", function(){ week2View(weeks, taskList); }, false);
-document.getElementById("W3").addEventListener("click", function(){ week3View(weeks), taskList; }, false);
+document.getElementById("W3").addEventListener("click", function(){ week3View(weeks, taskList); }, false);
 document.getElementById("W4").addEventListener("click", function(){ week4view(weeks, taskList); }, false);
 document.getElementById("std").addEventListener("click", function(){ standardWeeksView(weeks,  taskList); }, false);
 document.getElementById("recenter").addEventListener("click", function() { recenter(); }, false);
