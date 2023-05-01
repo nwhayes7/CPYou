@@ -187,7 +187,7 @@ function animate() {
 }
 
 function week1View(weeks, taskList) {
-  standardWeeksView(week, taskList)
+  standardWeeksView(weeks, taskList)
   weeks[0].position.set(0,0,-1000) //  set week 4 to back
   weeks[1].position.set(0,0,-1000) //  set week 4 to back
   weeks[2].position.set(0,0,-1000) //  set week 4 to back
