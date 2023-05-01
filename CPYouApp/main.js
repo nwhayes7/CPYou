@@ -148,7 +148,7 @@ function generateWeeks(monthBackend = null, monthObj = null) {
   return weeks
 } 
 
-function generateTaskList(y, taskList) {
+function generateTaskList(y, taskList, taskListObject) {
   let x = 0 // initialize x
   
   for (let i = 0; i < taskList.length; i++) { // loop through tsk list up to ten tasks
@@ -171,7 +171,7 @@ function generateTaskList(y, taskList) {
       task.add(text)
   })
     x++
-    scene.add(task) // add cube to scene
+    taskListObject.add(task) // add cube to scene
   }
 }
 
@@ -186,8 +186,8 @@ function animate() {
   renderer.render(scene, camera)  // render scene with camera
 }
 
-function week1View(weeks) {
-  standardWeeksView(weeks)
+function week1View(weeks, taskList) {
+  standardWeeksView(week, taskList)
   weeks[0].position.set(0,0,-1000) //  set week 4 to back
   weeks[1].position.set(0,0,-1000) //  set week 4 to back
   weeks[2].position.set(0,0,-1000) //  set week 4 to back
@@ -195,8 +195,8 @@ function week1View(weeks) {
   camera.position.set(0, 13, 40) 
 }
 
-function week2View(weeks) {
-  standardWeeksView(weeks)
+function week2View(weeks, taskList) {
+  standardWeeksView(weeks, taskList)
   weeks[0].position.set(0,0,-1000) //  set week 4 to back
   weeks[1].position.set(0,0,-1000) //  set week 4 to back
   weeks[3].position.set(0,0,-1000) //  set week 4 to back
@@ -204,8 +204,8 @@ function week2View(weeks) {
   camera.position.set(0, 13, 40) 
 }
 
-function week3View(weeks) {
-  standardWeeksView(weeks)
+function week3View(weeks, taskList) {
+  standardWeeksView(weeks, taskList)
   weeks[0].position.set(0,0,-1000) //  set week 4 to back
   weeks[3].position.set(0,0,-1000) //  set week 4 to back
   weeks[2].position.set(0,0,-1000) //  set week 4 to back
@@ -213,19 +213,20 @@ function week3View(weeks) {
   camera.position.set(0, 13, 40) 
 }
 
-function week4view (weeks) {
-  standardWeeksView(weeks)
+function week4view (weeks, taskList) {
+  standardWeeksView(weeks, taskList)
   weeks[3].position.set(0,0,-1000) //  set week 4 to back
   weeks[1].position.set(0,0,-1000) //  set week 4 to back
   weeks[2].position.set(0,0,-1000) //  set week 4 to back
   camera.position.set(0, 13, 40) 
 }
 
-function standardWeeksView(weeks) {
+function standardWeeksView(weeks, taskList) {
   weeks[0].position.set(0,0,10.5) // set week 1 to back
   weeks[1].position.set(0,0,3.5) // set week 2 to 3rd back
   weeks[2].position.set(0,0,-3.5) // set week 3 to 2nd back
   weeks[3].position.set(0,0,-10.5) // set week 4 to front
+  taskList.position.setZ(0)
   camera.position.set(0, 45, 0)
 }
 
@@ -278,20 +279,22 @@ let monthObj = new THREE.Object3D() // create new month object
 let weeks = generateWeeks(month, monthObj) // get weeks objects
 scene.add(monthObj)
 // scene.remove(monthObj)
-generateTaskList(weeks[0].children[7].position.y, month.getTasks()) // generate task list
+let taskList = new THREE.Object3D() // create new task list object
+generateTaskList(weeks[0].children[7].position.y, month.getTasks(), taskList) // generate task list
+scene.add(taskList)
 
 document.getElementById("FCFS").addEventListener("click", toggleFCFS, false);
 document.getElementById("Deadline").addEventListener("click", toggleDeadline, false);
 document.getElementById("Priority").addEventListener("click", togglePriority, false);
 document.getElementById("RoundRobin").addEventListener("click", toggleRoundRobin, false);
 document.getElementById("SJF").addEventListener("click", toggleSJF, false);
-document.getElementById("W1").addEventListener("click", function(){ week1View(weeks); }, false);
-document.getElementById("W2").addEventListener("click", function(){ week2View(weeks); }, false);
-document.getElementById("W3").addEventListener("click", function(){ week3View(weeks); }, false);
-document.getElementById("W4").addEventListener("click", function(){ week4view(weeks); }, false);
-document.getElementById("std").addEventListener("click", function(){ standardWeeksView(weeks); }, false);
+document.getElementById("W1").addEventListener("click", function(){ week1View(weeks, taskList); }, false);
+document.getElementById("W2").addEventListener("click", function(){ week2View(weeks, taskList); }, false);
+document.getElementById("W3").addEventListener("click", function(){ week3View(weeks), taskList; }, false);
+document.getElementById("W4").addEventListener("click", function(){ week4view(weeks, taskList); }, false);
+document.getElementById("std").addEventListener("click", function(){ standardWeeksView(weeks,  taskList); }, false);
 document.getElementById("recenter").addEventListener("click", function() { recenter(); }, false);
-document.getElementById("viewtasks").addEventListener("click", function() { viewTasks(); }, false);
+document.getElementById("viewtasks").addEventListener("click", function() { viewTasks(weeks, taskList); }, false);
 
 
 function toggleFCFS() {
@@ -355,9 +358,15 @@ function recenter() {
   camera.position.setY(45) // move camera up 45 units
 }
 
-function viewTasks() {
-  camera.position.setX(90)
+function viewTasks(weeks, taskList) {
+  weeks[0].position.set(0,0,10000) // set week 1 to back
+  weeks[1].position.set(0,0,1000) // set week 2 to 3rd back
+  weeks[2].position.set(0,0,1000) // set week 3 to 2nd back
+  weeks[3].position.set(0,0,1000) // set week 4 to front
+  taskList.position.setZ(20)
+  camera.position.set(0, 45, 0)
 }
+
 animate()
 
 
