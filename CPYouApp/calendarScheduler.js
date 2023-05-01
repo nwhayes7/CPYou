@@ -101,10 +101,8 @@ class TaskScheduler {
     // and then sort them according to the algorithm set
     runScheduler(timespan, unassignedTasks) {
         let tasks = timespan.getTasks();
-        console.log("Tasks length: " + tasks.length)
         timespan.removeTasks();
         tasks.concat(unassignedTasks);
-        let events = timespan.getEvents();
 
         // Algorithm sorts tasks in order
         switch(this.algorithm) {
@@ -157,7 +155,6 @@ class TaskScheduler {
             case "RR":
                 console.log("RR");
                 let tempTasksArray = [...tasks];
-                console.log("Temp tasks array: " + tempTasksArray.length);
                 let finalTasksArray = [];
                 let timeQuantum = 60 * 60000;
 
@@ -167,16 +164,12 @@ class TaskScheduler {
                     for (let i = 0; i < tempTasksArray.length; i++) {
                         // If the task can be completed in the time quantum, finish the task
                         if (tempTasksArray[i].duration <= timeQuantum) {
-                            console.log("Entered if");
                             finalTasksArray.push(tempTasksArray[i]);
-                            console.log("Tasks array: " + finalTasksArray.length);
                             tempTasksArray.splice(i, 1);
                             i--;
                         } else {
                         // Create a new task that has a shorter duration
-                            console.log("Entered else");
                             finalTasksArray.push(tempTasksArray[i].createSmallerTask(timeQuantum));
-                            console.log("Tasks array: " + finalTasksArray.length);
                             tempTasksArray[i].duration -= timeQuantum;
                         }
                     }
@@ -211,14 +204,11 @@ class TaskScheduler {
         let k = 0;
         // Iterate through the days in the timespan
         for (let i = weeks.length - 1; i >= 0; i--) {
-            console.log("i: "+ i);
             let week = weeks[i];
             let days = week.getDays();
 
             for (let j = days.length - 1; j >= 0 && k < tasks.length; j--) {
                 let day = days[j];
-                console.log("New day");
-                console.log("k: " + k)
                 let eventsOnDay = day.getEvents();
                 // Empty the current tasks of the day
                 day.tasks = [];
