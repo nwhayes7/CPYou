@@ -185,6 +185,49 @@ function animate() {
   renderer.render(scene, camera)  // render scene with camera
 }
 
+function week1View(weeks) {
+  standardWeeksView(weeks)
+  weeks[0].position.set(0,0,-1000) //  set week 4 to back
+  weeks[1].position.set(0,0,-1000) //  set week 4 to back
+  weeks[2].position.set(0,0,-1000) //  set week 4 to back
+  weeks[3].position.set(0, 0, 10.5) // set week 1 to front
+  camera.position.set(0, 13, 40) 
+}
+
+function week2View(weeks) {
+  standardWeeksView(weeks)
+  weeks[0].position.set(0,0,-1000) //  set week 4 to back
+  weeks[1].position.set(0,0,-1000) //  set week 4 to back
+  weeks[3].position.set(0,0,-1000) //  set week 4 to back
+  weeks[2].position.set(0,0, 10.5) // set week 2 to front
+  camera.position.set(0, 13, 40) 
+}
+
+function week3View(weeks) {
+  standardWeeksView(weeks)
+  weeks[0].position.set(0,0,-1000) //  set week 4 to back
+  weeks[3].position.set(0,0,-1000) //  set week 4 to back
+  weeks[2].position.set(0,0,-1000) //  set week 4 to back
+  weeks[1].position.set(0,0, 10.5) // set week 3 to front
+  camera.position.set(0, 13, 40) 
+}
+
+function week4view (weeks) {
+  standardWeeksView(weeks)
+  weeks[3].position.set(0,0,-1000) //  set week 4 to back
+  weeks[1].position.set(0,0,-1000) //  set week 4 to back
+  weeks[2].position.set(0,0,-1000) //  set week 4 to back
+  camera.position.set(0, 13, 40) 
+}
+
+function standardWeeksView(weeks) {
+  weeks[0].position.set(0,0,10.5) // set week 1 to back
+  weeks[1].position.set(0,0,3.5) // set week 2 to 3rd back
+  weeks[2].position.set(0,0,-3.5) // set week 3 to 2nd back
+  weeks[3].position.set(0,0,-10.5) // set week 4 to front
+  camera.position.set(0, 45, 0)
+}
+
 function stopAnimation() {
   cancelAnimationFrame(animationID);
 }
@@ -241,6 +284,12 @@ document.getElementById("Deadline").addEventListener("click", toggleDeadline, fa
 document.getElementById("Priority").addEventListener("click", togglePriority, false);
 document.getElementById("RoundRobin").addEventListener("click", toggleRoundRobin, false);
 document.getElementById("SJF").addEventListener("click", toggleSJF, false);
+document.getElementById("W1").addEventListener("click", function(){ week1View(weeks); }, false);
+document.getElementById("W2").addEventListener("click", function(){ week2View(weeks); }, false);
+document.getElementById("W3").addEventListener("click", function(){ week3View(weeks); }, false);
+document.getElementById("W4").addEventListener("click", function(){ week4view(weeks); }, false);
+document.getElementById("std").addEventListener("click", function(){ standardWeeksView(weeks); }, false);
+document.getElementById("recenter").addEventListener("click", function() { recenter(); }, false);
 
 
 function toggleFCFS() {
@@ -251,7 +300,7 @@ function toggleFCFS() {
   scene.remove(monthObj)
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
-  generateWeeks(month, monthObj) // get weeks objects
+  weeks = generateWeeks(month, monthObj) // get weeks objects
   generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
 function toggleDeadline() {
@@ -262,7 +311,7 @@ function toggleDeadline() {
   scene.remove(monthObj)
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
-  generateWeeks(month, monthObj) // get weeks objects
+  weeks = generateWeeks(month, monthObj) // get weeks objects
   generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
 function togglePriority() {
@@ -273,7 +322,7 @@ function togglePriority() {
   scene.remove(monthObj)
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
-  generateWeeks(month, monthObj) // get weeks objects
+  weeks = generateWeeks(month, monthObj) // get weeks objects
   generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
 function toggleRoundRobin() {
@@ -284,7 +333,7 @@ function toggleRoundRobin() {
   scene.remove(monthObj)
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
-  generateWeeks(month, monthObj) // get weeks objects
+  weeks = generateWeeks(month, monthObj) // get weeks objects
   generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
 function toggleSJF() {
@@ -295,10 +344,14 @@ function toggleSJF() {
   scene.remove(monthObj)
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
-  generateWeeks(month, monthObj) // get weeks objects
+  weeks = generateWeeks(month, monthObj) // get weeks objects
   generateTaskList(weeks[0].children[7].position.y) // generate task list
 }
-
+function recenter() {
+  camera.position.setX(0)
+  camera.position.setZ(0) 
+  camera.position.setY(45) // move camera up 50 units
+}
 animate()
 
 
