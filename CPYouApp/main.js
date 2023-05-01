@@ -148,16 +148,17 @@ function generateWeeks(monthBackend = null, monthObj = null) {
   return weeks
 } 
 
-function generateTaskList(y) {
+function generateTaskList(y, taskList) {
   let x = 0 // initialize x
-  while (x < 10 || x == 10) { // loop through tsk list up to ten tasks
+  
+  for (let i = 0; i < taskList.length; i++) { // loop through tsk list up to ten tasks
     const geometry = new THREE.BoxGeometry(5, 1, 5)
     const material = new THREE.MeshStandardMaterial({ color: 0xF8B195  })
     const task = new THREE.Mesh(geometry, material) // create new cube mesh
     task.position.set(-21 + x*7, y, -22) // set cube position
     
     loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-      const textGeometry = new TextGeometry('June1\nI love pandas', {
+      const textGeometry = new TextGeometry(taskList[i].name, {
         font: font,
         size: .4,
         height: .04,
@@ -277,7 +278,7 @@ let monthObj = new THREE.Object3D() // create new month object
 let weeks = generateWeeks(month, monthObj) // get weeks objects
 scene.add(monthObj)
 // scene.remove(monthObj)
-generateTaskList(weeks[0].children[7].position.y) // generate task list
+generateTaskList(weeks[0].children[7].position.y, month.getTasks()) // generate task list
 
 document.getElementById("FCFS").addEventListener("click", toggleFCFS, false);
 document.getElementById("Deadline").addEventListener("click", toggleDeadline, false);
@@ -290,6 +291,7 @@ document.getElementById("W3").addEventListener("click", function(){ week3View(we
 document.getElementById("W4").addEventListener("click", function(){ week4view(weeks); }, false);
 document.getElementById("std").addEventListener("click", function(){ standardWeeksView(weeks); }, false);
 document.getElementById("recenter").addEventListener("click", function() { recenter(); }, false);
+document.getElementById("viewtasks").addEventListener("click", function() { viewTasks(); }, false);
 
 
 function toggleFCFS() {
@@ -301,7 +303,7 @@ function toggleFCFS() {
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
   weeks = generateWeeks(month, monthObj) // get weeks objects
-  generateTaskList(weeks[0].children[7].position.y) // generate task list
+  generateTaskList(weeks[0].children[7].position.y, month.getTasks()) // generate task list
 }
 function toggleDeadline() {
   calendar.setSchedulerAlgorithm("Deadline");
@@ -312,7 +314,7 @@ function toggleDeadline() {
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
   weeks = generateWeeks(month, monthObj) // get weeks objects
-  generateTaskList(weeks[0].children[7].position.y) // generate task list
+  generateTaskList(weeks[0].children[7].position.y, month.getTasks()) // generate task list
 }
 function togglePriority() {
   calendar.setSchedulerAlgorithm("Priority");
@@ -323,7 +325,7 @@ function togglePriority() {
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
   weeks = generateWeeks(month, monthObj) // get weeks objects
-  generateTaskList(weeks[0].children[7].position.y) // generate task list
+  generateTaskList(weeks[0].children[7].position.y, month.getTasks()) // generate task list
 }
 function toggleRoundRobin() {
   calendar.setSchedulerAlgorithm("RR");
@@ -334,7 +336,7 @@ function toggleRoundRobin() {
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
   weeks = generateWeeks(month, monthObj) // get weeks objects
-  generateTaskList(weeks[0].children[7].position.y) // generate task list
+  generateTaskList(weeks[0].children[7].position.y, month.getTasks()) // generate task list
 }
 function toggleSJF() {
   calendar.setSchedulerAlgorithm("SJF");
@@ -345,12 +347,16 @@ function toggleSJF() {
   monthObj = new THREE.Object3D() // create new month object
   scene.add(monthObj)
   weeks = generateWeeks(month, monthObj) // get weeks objects
-  generateTaskList(weeks[0].children[7].position.y) // generate task list
+  generateTaskList(weeks[0].children[7].position.y, month.getTasks()) // generate task list
 }
 function recenter() {
   camera.position.setX(0)
   camera.position.setZ(0) 
-  camera.position.setY(45) // move camera up 50 units
+  camera.position.setY(45) // move camera up 45 units
+}
+
+function viewTasks() {
+  camera.position.setX(90)
 }
 animate()
 

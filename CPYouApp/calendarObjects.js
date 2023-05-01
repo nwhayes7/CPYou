@@ -189,7 +189,7 @@ export class Day {
         //if (isAfterFebruary22(date)) {
             let numEvents = 3
             for (let i = 1; i <= numEvents; i++) {
-                const t = new Task("task " + i, "description", createRandomDate(), Math.floor(Math.random() * 4) + 1, (Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30) * 60000);
+                const t = new Task("Task " + i, "description", createRandomDate(), Math.floor(Math.random() * 4) + 1, (Math.floor(Math.random() * ((180 - 30) / 15 + 1)) * 15 + 30) * 60000);
                 this.tasks.push(t);
             }
         //}
